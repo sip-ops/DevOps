@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  nginx: 
+    image: nginx:latest
+    container_name: test_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - my-network
+    ports:
+      - 80:80
+      - 443:443
+
+  airport-assembly-compose-app-container:
+    image: airport-assembly:latest
+    build:
+      context: ./app1
+      dockerfile: Dockerfile
+    volumes:
+      - /data/airport-assembly-compose-app
+    networks:
+      my-network:
+        aliases:
+          - airport-assembly
+    ports:
+      - "8081:80"
+
+  airports-assembly-compose-app-container:
+    image: airports-assembly:latest
+    build:
+      context: ./app3
+      dockerfile: Dockerfile
+    volumes:
+      - /data/airports-assembly
+    networks:
+      my-network:
+        aliases:
+          - airports-assembly
+    ports:
+      - "8083:80"
+
+  countries-assembly-compose-app-container:
+    image: countries-assembly:latest
+    build:
+      context: ./app2
+      dockerfile: Dockerfile
+    volumes:
+      - /data/countries-assembly
+    networks:
+      my-network:
+        aliases:
+          - countries-assembly
+    ports:
+      - "8082:80"
+
+networks:
+      my-network:
